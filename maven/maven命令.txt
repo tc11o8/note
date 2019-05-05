@@ -1,0 +1,30 @@
+maven 命令
+
+判断jar是否正确的被引用 有两种方法
+1项目启动时加上VM参数：-verbose:class 项目启动的时候会把所有加载的jar都打印出来
+2mvn dependency:tree -Dverbose  看到项目中引用jar版本号
+
+mvn clean
+mvn install   在本地Repository中安装jar
+mvn deploy  部署到远程nexus仓库
+mvn eclipse:eclipse   编译build
+mvn dependency:sources  下载源代码
+mvn dependency:tree
+mvn mybatis-generator:generate 
+mvn compile  编译源代码
+mvn test-compile    编译测试代码
+mvn test  运行测试
+mvn clean package -DskipTests
+mvn tomcat:run
+mvn test -skipping compile -skipping test-compile 只测试，不编译，也不测试编译
+
+mvn archetype:create  -DgroupId=packageName  -DartifactId=projectName   创建Maven的普通java项目
+mvn archetype:create  -DgroupId=packageName  -DartifactId=webappName  -DarchetypeArtifactId=maven-archetype-webapp    创建Maven的Web项目
+
+mvn install:install-file -Dfile=这里是本地jar包的位置 -DgroupId=包名 -DartifactId=具体项目的名称 -Dversion=版本号 -Dpackaging=打包类型
+mvn install:install-file -Dfile=E:\works\qy-channel-douyin\okhttputils-2_6_2.jar -DgroupId=com.zhy -DartifactId=okhttputils -Dversion=2.6.2 -Dpackaging=jar
+
+http://repo2.maven.org/maven2/  Maven库
+http://mvnrepository.com/  Maven依赖查询
+
+mybatis-generator:generate
