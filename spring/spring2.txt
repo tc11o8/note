@@ -1,0 +1,38 @@
+Spring框架运用了非常多的设计模式，从整体上看，它的设计严格遵循了OCP----开闭原则，即：
+1、保证对修改关闭，即外部无法修改Spring整个运作的流程
+2、提供对扩展开放，即可以通过继承、实现Spring提供的众多抽象类与接口来改变类加载的行为
+
+生命周期执行的过程如下:
+1)spring对bean进行实例化,默认bean是单例
+2)spring对bean进行依赖注入
+3)如果bean实现了BeanNameAware接口,spring将bean的id传给setBeanName()方法
+4)如果bean实现了BeanFactoryAware接口,spring将调用setBeanFactory方法,将BeanFactory实例传进来
+5)如果bean实现了ApplicationContextAware()接口,spring将调用setApplicationContext()方法将应用上下文的引用传入
+6) 如果bean实现了BeanPostProcessor接口,spring将调用它们的postProcessBeforeInitialization接口方法
+7) 如果bean实现了InitializingBean接口,spring将调用它们的afterPropertiesSet接口方法,类似的如果bean使用了init-method属性声明了初始化方法,改方法也会被调用
+8)如果bean实现了BeanPostProcessor接口,spring将调用它们的postProcessAfterInitialization接口方法
+9)此时bean已经准备就绪,可以被应用程序使用了,他们将一直驻留在应用上下文中,直到该应用上下文被销毁
+10)若bean实现了DisposableBean接口,spring将调用它的distroy()接口方法。同样的,如果bean使用了destroy-method属性声明了销毁方法,则该方法被调用
+
+InitialingBean是一个接口，提供了一个唯一的方法afterPropertiesSet()。
+DisposableBean也是一个接口，提供了一个唯一的方法destory()。
+这两个接口是一组的，功能类似，因此放在一起：前者顾名思义在Bean属性都设置完毕后调用afterPropertiesSet()方法做一些初始化的工作，后者在Bean生命周期结束前调用destory()方法做一些收尾工作。
+
+BeanNameAware、ApplicationContextAware和BeanFactoryAware
+这三个接口放在一起写，是因为它们是一组的，作用相似。"Aware"的意思是"感知到的"，那么这三个接口的意思也不难理解：
+1、实现BeanNameAware接口的Bean，在Bean加载的过程中可以获取到该Bean的id
+2、实现ApplicationContextAware接口的Bean，在Bean加载的过程中可以获取到Spring的ApplicationContext，这个尤其重要，ApplicationContext是Spring应用上下文，从ApplicationContext中可以获取包括任意的Bean在内的大量Spring容器内容和信息
+3、实现BeanFactoryAware接口的Bean，在Bean加载的过程中可以获取到加载该Bean的BeanFactory
+
+org.springframework.jdbc.datasource.lookup包
+AbstractRoutingDataSource.class
+覆盖方法 protected abstract Object determineCurrentLookupKey(); 实现多数据源控制
+
+spring AOP
+(1)Pointcut：拦截点表达式， 
+(2)Joinpoint：符合上述Pointcut表达式的一个具体的拦截点。他们的关系就像正则表达式和符合该正则表达式的对象一样。 
+(3)advice : 如拦截到对应的某个方法后，我们要做写什么？advice就是拦截后要执行的动作。
+
+通过实现 InitializingBean/DisposableBean 接口来定制初始化之后/销毁之前的操作方法；
+通过 元素的 init-method/destroy-method属性指定初始化之后 /销毁之前调用的操作方法；
+在指定方法上加上@PostConstruct 或@PreDestroy注解来制定该方法是在初始化之后还是销毁之前调用。

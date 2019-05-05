@@ -1,0 +1,59 @@
+java.util.concurrent.atomic;
+
+AtomicBoolean
+ 用volatile成员变量进行CAS操作， sun.misc.Unsafe.getUnsafe()，注意unsaft具有直接操作jvm内存入口，可以直接分配对象，访问对象，操作对象等功能
+AtomicIntegerArray
+ 成员变量为int[] array,使用unsafe进行操作
+AtomicIntegerFieldUpdater
+private AtomicIntegerFieldUpdater<Details>  atomicIntegerFieldUpdater = AtomicIntegerFieldUpdater.newUpdater( Details.class, "numberTimesInvoked" );
+AtomicLongFieldUpdater
+内部查看当前vm是否支持cas操作，如果支持，则使用casupdater,否则用lockedupdater(内部为synchronized锁实现)，都用到了unsafe直接操作内存
+AtomicReferenceFieldUpdater
+ 一个基于反射的工具类，它能对指定类的指定的volatile引用字段进行原子更新。(注意这个字段不能是private的)，注意改类本身是抽象类，但是抽象类中组合了实现该抽象类的静态子类 private static final class AtomicReferenceFieldUpdaterImpl<T,V>，其中使用了sun.reflect.misc.ReflectUtil工具类进行ensureMemberAccess，checkPackageAccess操作。
+AtomicStampedReference<V>
+解决ABA问题，内部组合了一个Pair类，成员变量T reference,int stamp(记录当前值)，有静态工厂方法构造器of创建对象实例。每次compareAndSet，需要比较stamp是否改变。AtomicMarkableReference和AtomicStampedReference类似，只是用boolean类型的mark替代stamp.
+
+java.util.concurrent.locks;
+
+AbstractOwnableSynchronizer
+持有线程，AQS的抽象父类。
+AbstractQueuedLongSynchronizer
+64位版本的同步器
+AbstractQueuedSynchronizer
+管理同步器类中的状态，volatile int state成员变量，内部维护了一组单向链表，由包装了线程的Node组成，
+ReentrantLock
+实现Lock，serializable接口，有内部类Sync，继承自AbstractQueuedSychronizer,Sync有子类FairSync,NonfairSync公平锁和非公平锁，volatile state,get
+
+LinkedBlockingQueue<E>
+FIFO链表队列，head指针指向Node<E>,last指针指向Node<E>,
+有not full conditon,not empty conditon,ReentrantLock实现,有AtomicInteger记录当前队列元素个数，
+添加元素方法
+void put(E e) throws InterruptedException, 不支持中断，阻塞延迟，lockInterruptibly()方法，调用AQS sync.acquireInterruptibly(1)，1为成功获取中设置state状态的值
+boolean offer(E e, long timeout, TimeUnit unit)throws InterruptedException,
+boolean offer(E e)  不支持中断，直接取，成功或失败
+取出元素方法
+E take() throws InterruptedException， 不支持中断，阻塞延迟
+E poll(long timeout, TimeUnit unit) throws InterruptedException，
+E poll()  不支持中断，直接取，成功或失败
+
+ConcurrentSkipListMap
+ConcurrentSkipListMap的key是有序的，支持更高的并发。存取时间是log（N），和线程数几乎无关。也就是说在数据量一定的情况下，并发的线程越多，越能体现出ConcurrentSkipListMap的优势。SkipList跳跃列表(跳表）是一种可以代替平衡树的数据结构，默认是按照Key值升序的。Skip list让已排序的数据分布在多层链表中，以0-1随机数决定一个数据的向上攀升与否，通过“空间来换取时间”的一个算法，在每个节点中增加了向前的指针，在插入、删除、查找时可以忽略一些不可能涉及到的结点，从而提高了效率。
+
+CopyOnWriteArrayList
+写时复制的容器，适用读多写少场景，往一个容器添加元素的时候，不直接往当前容器添加，而是先将当前容器进行Copy，复制出一个新的容器，然后新的容器里添加元素，添加完元素之后，再将原容器的引用指向新的容器。使用ReentrantLock。
+
+CountDownLatch
+内部组合sync继承AQS,countDown方法计数减一和await方法。
+CyclicBarrier
+await()通知线程已完成，CyclicBarrier(int,Runnable)，它允许一组线程等待彼此，直到所有线程都到达集合点，然后执行某个设定的任务。该对象可重用。CyclicBarrier 是利用了 Condition 接口，定义了一个叫做 trip 的 Condition，当所有线程到达后线程才能从 Condition 队列中移到 AQS 的等待队列继续运行。
+
+CountDownLatch与CyclicBarrier比较
+都是线程同步的辅助类，
+CyclicBarrier是参与的所有的线程彼此等待，
+CountDownLatch有一个导游线程在等待，每个线程报到一下即可无须等待，等到导游线程发现所有人都已经报到了，就结束了自己的等待。
+CountDownLatch 是计数器, 线程完成一个就记一个, 就像报数一样, 只不过是递减的。
+CyclicBarrier更像一个水闸, 线程执行就想水流, 在水闸处都会堵住, 等到水满(线程到齐)了, 才开始泄流。
+
+DelayQueue
+DelayQueue<E extends Delayed> extends AbstractQueue<E>  implements BlockingQueue<E>
+组成，ReentrantLock，用于根据delay时间排序的优先级队列PriorityQueue，用于优化阻塞通知的线程元素leader，用于实现阻塞和通知的Condition对象。

@@ -1,0 +1,12 @@
+redis
+
+ps -ef|grep redis
+ /usr/local/redis/bin/redis-cli -h 10.139.55.44 -p 6379 -a password
+
+debug object key  查看key
+dbsize 查看key数量
+info memory  查看内存
+ttl key  查看生存剩余秒数
+pttl key 毫秒数
+
+redis desktop manager

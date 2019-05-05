@@ -1,0 +1,33 @@
+wget url
+tar xzvf zookeeper.tar.gz   解压
+mv zookeeper1.2.3 zookeeper  重命名
+cd zookeeper/conf
+cp zoo_sample.cfg zoo.cfg
+vim zoo.cfg
+dataDir=/var/zookeeper/data
+dataLogDir=/var/zookeeper/log  事务日志文件   需要定时清理
+scp zoo.cfg root@192.168.1.106:/opt/zookeeper/conf
+vim 
+:wq 保存退出
+:q!  不保存退出
+cd /var/zookeeper/data
+echo "1">myid  命名zookeeper Id = 1
+yum install telnet
+telnet 192.168.10.112 2181  连接到zookeeper
+stat    
+./zkCli.sh -timeout 5000 -server 192.168.10.112:2181 连接到zookeeper
+./zkCli.sh   接连本机zookeeper
+h  查看命令
+create /node_2 ip:192.168.10.112:crwda
+create /node_2 digest:jike:秘钥:crwda
+
+crontab -l   查看定时任务
+crontab -e  编辑定时任务
+
+权限模式（scheme）:ip,digest
+授权对象（ID）
+ip权限模式：具体ip地址
+degest权限模式：username:Base64(SHA-1(username:password))
+权限(permission):create(c),delete(d),read(r),write(w),admin(a)
+备注：单个权限，完全权限，复合权限
+权限组合：scheme+ID+permission

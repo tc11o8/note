@@ -1,0 +1,29 @@
+jquery
+
+var jsObj = {};  
+jsObj.testArray = [1,2,3,4,5];  
+jsObj.name = 'CSS3';  
+jsObj.date = '8 May, 2011';  
+var str = JSON.stringify(jsObj);     //object to string
+var str1 = JSON.parse(str);     //string to object
+
+$("#tdClaimsPic img").each(function(i){
+	this.src = imgServerFileDownLoadUrl+'?id='+this.id;
+});
+
+$('input:checkbox[name="areaList"]').each(function(i) {
+	var val = $(this).val();
+	if( $.inArray(val, arrCode)>-1){     //inArray
+		this.checked = true;
+	}else{
+		this.checked = false;
+	}
+});
+
+var arrCode = [];
+$('input:checkbox[name="areaList"]:checked').each(function(i) {
+	arrCode.push($(this).val());
+});
+$("#areaCodes").val(arrCode.join(","));
+
+$("#baseInfoTable tr.bonusContent:eq("+index+")").remove();  //删除表格某行

@@ -1,0 +1,38 @@
+eclipse快捷键
+
+查类继承树 点类名 按F4
+Ctrl+1:快速修复
+Ctrl+T:快速显示当前类的继承结构
+Ctrl+Shift+R:输入字母查找文件
+Ctrl+Shift+T:搜索类
+Ctrl+SHIFT+F:整形
+Ctrl+Shlft+O:快速import
+Ctrl+Shift+G:查找类、方法和属性的引用
+Ctrl+Shift+U:查找当前选定值
+Ctrl+O:显示该类的所有变量和方法
+Ctrl+H:打开Search弹出框
+Ctrl+D:删除本行 
+Ctrl+M:视图最大化和还原
+Ctrl+/:注释
+Ctrl+K:快速向下查找选定的内容
+Ctrl+Shift+K:快速向上查找选定的内容
+Ctrl+L:跳转到指定行
+Ctrl+F11快速运行项目
+ALT+/:用户编辑的好帮手
+ALT+Up/Down:快速移动行
+Ctrl+Alt+Up/Down:快速复制行
+Shift+Enter:换行
+Ctrl+Shlft+x:字母大写
+Ctrl+Shlft+y:字母小写
+
+调试
+F5 单步跳入
+F6 单步跳过
+F7 单步返回
+F8 继续
+Ctrl+Shift+D 显示变量的值
+Ctrl+Shift+B 在当前行设置或者去掉断点
+Ctrl+R 运行至行(超好用，可以节省好多的断点)
+
+eclipse启动不了，万能方案
+删除文件：[workspace]/.metadata/.plugins/org.eclipse.e4.workbench/workbench.xmi

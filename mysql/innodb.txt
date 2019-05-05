@@ -1,0 +1,80 @@
+MySQL技术内幕-InnoDB存储引擎
+
+第一章 MySQL体系结构和存储引擎
+数据库是文件的集合，实例是程序
+ps -ef|grep mysqld
+mysql --help | grep my.cnf  配置文件
+show variables like 'datadir'
+Mysql区别其他数据库，插件式表存储引引擎
+show engines
+mysql -h 192.168.0.101 -u zmj -p
+show variables like 'socket'
+mysql -u david -s /tmp/mysql.sock
+
+InnoDB存储引擎
+OLTP，online transaction processing
+支持事务，行锁设计，支持外键，默认读操作不产生锁
+mvcc 多版本并发控制 -> 高并发性
+innodb 实现了四种隔离机制，默认可重复读
+next-key-locking 避免幻读
+插入缓冲
+二次写
+自适应hash
+预读
+
+MyISAM存储引擎
+OLAP, online analysis processing
+不支持事务，表锁，全文索引
+缓冲池只缓存索引文件
+
+第二章Inndb存储引擎
+后台线程
+负责刷新内存块的数据，使其保持最新，脏页刷新，异常恢复： 
+Master thread，数据异步刷新至磁盘、保证数据一致性、脏页刷新、合并插入缓冲、undo页回收 ,master thread checkpoint
+IO Thread，AIO来处理写IO请求，write,read,insert buffer,log io thread
+show variables like 'innodb_version'
+show variables like 'innodb_%io_thread'
+Purge Thread，回收undo页, show variables like 'innodb_purge_thread'
+Page Cleaner Thread, 脏页刷新，flush_lru_list checkpoint,async/sync flush checkpoint
+内存
+缓冲池，由于CPU和磁盘速度差距大，使用缓冲池提高性能，缓冲池大小直接影响数据库性能
+多个缓冲池实例，每个页根据hash值分配到不同缓冲池，
+select * from innodb_buffer_pool_status
+show variables like 'innodb_buffer_pool_instance'
+show engine innodb status
+页16K，LRU，latest recent used,频繁的在页前端，midpoint insertion strategy,5/8处
+show variables like 'innodb_old_blocks_pct'
+innodb_old_blocks_time 页读取到mid位置后需要等待多久才会被加入到LRU列表的热端
+table innodb_buffer_pool_stats,innodb_buffer_page_lru
+通过checkpoint机制将脏页刷新回磁盘，脏页存在于LRU列表和Flush列表，LRU管理缓冲池的可用性，FLUSH管理将页刷新回磁盘，两者独立
+redo log buffer，当master thread每秒刷新，提交事务，当空间小于1/2时，将重做日志缓冲刷新到日志文件
+show variables like 'innodb_log_buffer_size' 
+额外内存池
+checkpoint技术，缩短数据库恢复时间，将缓冲池中脏页刷新到磁盘，将redo log buffer刷新到日志文件
+事务提交时，必须先写重做日志，再修改页
+
+Master thread
+main loop per second to do:
+日志缓冲刷新到磁盘，即使事务还没提交
+合并插入缓冲
+至多刷新100个缓冲池脏页到磁盘
+如当前没有用户活动，切换到background loop
+main loop per ten second to do:
+刷新100个脏页到磁盘
+合并至多5个插入缓冲
+将日志缓冲插入磁盘
+删除无用的undo页
+刷新100个或者10个脏页到磁盘
+background loop to do:
+删除无用的undo页
+合并20个插入缓冲
+跳回到主循环
+不断刷新100个页直到符合条件,to flush loop
+flush loop to suspend loop
+
+Master thread 调优
+innodb_io_capacity  磁盘io的吞吐量，默认值为200
+innodb_max_dirty_pages_pct 默认值为90，脏页占缓冲池的90%，才刷新100个脏页
+innodb_adaptive_flushing 自适应的刷新，每秒刷新脏页的数量
+innodb_purge_batch_size 每次full purge回收的undo页的数量，默认值为20
+show engine innodb status

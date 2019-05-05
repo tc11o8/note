@@ -1,0 +1,11 @@
+jvm
+
+jps -mlvV   -m main参数,-l 包名,-v jvm参数,-V flag文件传递到JVM中的参数
+jstack 2815 
+jstack -m 2815   
+jinfo -flags 2815  可看系统启动的参数
+jmap -heap 2815   查看堆
+jmap -dump:live,format=b,file=/tmp/heap2.bin 2815  
+jmap -histo 2815 | head -10 
+jstat -gcutil 2815 1000
+jstat -gccause 2815

@@ -1,0 +1,150 @@
+sudo su -
+wget url
+tar xzvf zookeeper.tar.gz   解压
+mv zookeeper1.2.3 zookeeper  重命名
+cd zookeeper/conf
+cp zoo_sample.cfg zoo.cfg
+vim zoo.cfg
+dataDir=/var/zookeeper
+scp zoo.cfg root@192.168.1.106:/opt/zookeeper/conf
+scp -r install.sh restart.sh sedProperties.sh svnUpAndRestart.sh src root@172.18.245.165:/home/project/qy-channel-log
+vim 
+:wq 保存退出
+:q!  不保存退出
+yum install telnet
+telnet 192.168.10.112 2181  连接到zookeeper
+stat    
+ ./zkCli.sh -timeout 5000 -server 192.168.10.112:2181 连接到zookeeper
+h  查看命令
+create /node_2 ip:192.168.10.112:crwda
+create /node_2 digest:jike:秘钥:crwda
+权限模式（scheme）:ip,digest
+授权对象（ID）
+ip权限模式：具体ip地址
+degest权限模式：username:Base64(SHA-1(username:password))
+权限(permission):create(c),delete(d),read(r),write(w),admin(a)
+备注：单个权限，完全权限，复合权限
+权限组合：scheme+ID+permission
+
+cat install.log 从第一行开始显示
+tac install.log 从最后一行开始显示
+more install.log
+less install.log
+tail -n5 install.log  显示尾部5行
+tail -n5 -f install.log  加f持续显示更新的内容
+head -n5 install.log
+find /home -name install.log
+find /home -name "*.log"
+find . print  递归打印当前目录所有文件find ./ -size +100Mfind ./ -size +1G
+grep audit install.log  文件中查找字符audit
+grep -C 5 foo file 显示file文件里匹配foo字串那行以及上下5行
+grep -B 5 foo file 显示foo及前5行
+grep -A 5 foo file 显示foo及后5行
+grep -V 查看grep版本号的方法是 
+grep -o u554a logback.log.2018-08-21|wc -l  查找关键字统计个数
+
+sort -n install.log 
+wc -l install.log  查看文件中行数
+sort install.log | uniq -c -u
+whereis java 定位可执行文件
+expr 10 + 10  
+tar -cf a.tar install.log log  将后两文件打包到a.tar  -cvf -zcvf -jcvf
+tar -tf a.tar  查看包中文件
+tar -xf a.tar  解压
+curl www.baidu.com
+curl -i www.baidu.com 带header
+curl -I www.baidu.com  只显示header
+
+wget http:url
+tar zxvf zookeeper-3.4.8.tar.gz  解压
+mv zookeeper-3.4.8 zookeeper  重命名
+cp zoo_sample.cfg zoo.cfg   复制一份
+scp zoo.cfg root@192.168.10.88:/opt/zookeeper/conf  发送到远程
+
+线上tomcat
+/usr/local/tomcat8080
+/usr/local/tomcat8080/logs/catalina.out  应用日志文件
+/usr/local/javaapp/tomcat8080/logs/
+
+date -s "20100405 14:31:00"  修改系统时间
+
+uptime  查看系统load
+top|grep Cpu 
+mkdir
+vm 
+iostat -mtx 2
+
+last -n 5  只是显示最近登录的5个帐号
+last -n 5 | awk  '{print $1}'
+cat /etc/passwd |awk  -F ':'  '{print $1}'
+cat /etc/passwd |awk  -F ':'  '{print $1"\t"$7}'
+cat /etc/passwd |awk  -F ':'  'BEGIN {print "name,shell"}  {print $1","$7} END {print "blue,/bin/nosh"}'
+awk -F: '/root/' /etc/passwd  搜索/etc/passwd有root关键字的所有行
+
+ps -ef|grep java
+kill -9 pid
+jps -mlvV   -m main参数,-l 包名,-v jvm参数,-V flag文件传递到JVM中的参数
+jstack 2815 top -Hp 2815   #查看进程下各子线程
+printf "%x\n" 2518   #换算成16进制  然后到文件中搜索jstack 4518|grep -A 20 121f  #搜索线程
+jinfo -flags 2815  可看系统启动的参数
+jmap -heap 2815   查看堆
+
+jmap -dump:format=b,file=satallite.hprof  2815
+jmap -histo 2815 | head -10 
+jstat -gcutil 2815 1000
+jstat -gccause 2815 
+jmap -histo 10929 > jmap.txt
+top -Hp 10929
+
+cat主要有三大功能：
+1.一次显示整个文件:cat filename
+2.从键盘创建一个文件:cat > filename 只能创建新文件,不能编辑已有文件.
+3.将几个文件合并为一个文件:cat file1 file2 > file
+
+ls -l
+把conkyrc.sample文件的所有权转移到用户user:
+chown user conkyrc.sample
+要改变所属组，可使用下面命令
+chown :users conkyrc.sample
+
+vi /etc/sysconfig/iptables
+yy 复制整行
+p  粘贴
+dd 删除整行
+services iptables restart  重启防火墙
+sz filename 下载文件
+ifconfig -a 查看本机ip
+curl ipinfo.io  查看本机对外IP
+rm -rf qy-channel-tang-1.0.*  删除文件夹和下面的所有文件
+netstat -a    查看所有服务端口
+netstat -ant | grep 8080
+df -h 查看磁盘空间
+du -sh /opt/logs  查看指定目录磁盘占用情况
+du --max-depth=1 -h /home/opt/  查看文件大小iostat -x 1  #磁盘IO情况
+du -h --max-depth=1
+true>nohup.txt 清空文件
+
+yum install lrzsz  安装文件上传工具
+rz  上传文件
+sz  下载文件
+vim /etc/profile  编辑环境变量
+sourc /etc/profile  刷新配置 
+tcpdump port 8808 -w aa.cap  抓包
+charles 破解
+lsof -i:22   #list open file 查看端口占用情况
+lsof -n|awk '{print $2}'|sort| uniq -c|sort -nr|more  查询 文件句柄数  线程id
+ulimit -n #查看文件句柄数   ulimit -n 1024默认
+netstat -tunlp|grep 22 #显示tcp，udp端口和进程情况
+free -h #系统内存
+sysctl -a  #运行时内核参数
+sysctl -a|grep dirty #显示脏页设置vmstatiostat
+
+手动发布项目
+svn checkout $path 
+cd /home/svn/adminbugfix/
+svn update
+mvn install
+\cp -rf traget/tbj_admin/* /usr/local/tomcat8080/webapps/root
+ps -ef|grep java
+kill -9 20415
+sh /usr/local/tomcat8080/bin/startup.sh
